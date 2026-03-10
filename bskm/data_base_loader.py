@@ -14,46 +14,58 @@ conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=D
 cur = conn.cursor()
 
 cur.execute("""
-CREATE TABLE IF NOT EXISTS bskm_agents (
+CREATE TABLE IF NOT EXISTS bskim_mobilier_agents (
     id SERIAL PRIMARY KEY,
     agent_id INT,
     first_name TEXT,
     last_name TEXT,
+    full_name TEXT,
     email TEXT,
-    phone TEXT,
+    phone_number TEXT,
     ads_count INT,
     rsac_number TEXT,
     charge_type TEXT,
-    address_city TEXT,
-    address_zip TEXT,
-    rsac_city TEXT,
-    rsac_zip TEXT,
+    city TEXT[],
+    postal_code TEXT[],
     total_reviews INT,
-    url TEXT
+    profile_url TEXT,
+    network TEXT    
 )
 """)
 
 for a in agents:
     cur.execute("""
-    INSERT INTO bskm_agents (
-        agent_id, first_name, last_name, email, phone, ads_count, rsac_number, charge_type,
-        address_city, address_zip, rsac_city, rsac_zip, total_reviews, url
-    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO bskim_mobilier_agents (
+        agent_id,
+        first_name,
+        last_name,
+        full_name,
+        email,
+        phone_number,
+        ads_count,
+        rsac_number,
+        charge_type,
+        city,
+        postal_code,
+        total_reviews,
+        profile_url,
+        network
+    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s)
     """, (
         a.get("id"),
-        a.get("firstName"),
-        a.get("lastName"),
+        a.get("first_name"),
+        a.get("last_name"),
+        a.get("full_name"),
         a.get("email"),
-        a.get("phone"),
+        a.get("phone_number"),
         a.get("adsCount"),
         a.get("rsacNumber"),
         a.get("chargeType"),
-        a.get("addressCity", {}).get("name"),
-        a.get("addressCity", {}).get("zipCode"),
-        a.get("rsacCity", {}).get("name"),
-        a.get("rsacCity", {}).get("zipCode"),
+        a.get("city", []),
+        a.get("postal_code", []),
         a.get("metaReviews", {}).get("total_reviews"),
-        a.get("url")
+        a.get("profile_url"),
+        a.get("network")
     ))
 
 conn.commit()

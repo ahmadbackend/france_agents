@@ -11,19 +11,21 @@ DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-with open("efficity_agents_data.json", "r", encoding="utf-8") as f:
+with open("efficity_agents_data_cleaned.json", "r", encoding="utf-8") as f:
     agents = json.load(f)
 
 conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
 cur = conn.cursor()
 
 cur.execute("""
-CREATE TABLE IF NOT EXISTS efficity_agents (
+CREATE TABLE IF NOT EXISTS efficity (
     id SERIAL PRIMARY KEY,
-    url TEXT,
-    name TEXT,
+    profile_url TEXT,
+    first_name TEXT,
+    last_name TEXT,
+    full_name TEXT,
     location TEXT,
-    mobile TEXT,
+    phone_number TEXT,
     email TEXT,
     rating NUMERIC,
     reviews_count INT
@@ -32,13 +34,15 @@ CREATE TABLE IF NOT EXISTS efficity_agents (
 
 for a in agents:
     cur.execute("""
-    INSERT INTO efficity_agents (url, name, location, mobile, email, rating, reviews_count)
-    VALUES (%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO efficity (profile_url, first_name, last_name, full_name, location, phone_number, email, rating, reviews_count)
+    VALUES (%s,%s,%s,%s,%s,%s,%s, %s, %s)
     """, (
-        a.get("url"),
-        a.get("name"),
+        a.get("profile_url"),
+        a.get("first_name"),
+        a.get("last_name"),
+        a.get("full_name"),
         a.get("location"),
-        a.get("mobile"),
+        a.get("phone_number"),
         a.get("email"),
         a.get("rating"),
         a.get("reviews_count")

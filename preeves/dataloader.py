@@ -18,56 +18,51 @@ conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=D
 cur = conn.cursor()
 
 cur.execute("""
-CREATE TABLE IF NOT EXISTS preeves_agents (
+CREATE TABLE IF NOT EXISTS preeves_brokers (
     id SERIAL PRIMARY KEY,
     agent_id TEXT,
     active BOOLEAN,
     first_name TEXT,
     last_name TEXT,
+    full_name TEXT,
     phone TEXT,
-    zone TEXT,
+    network TEXT,
     identifier TEXT,
     type TEXT,
     civility TEXT,
     google_my_business TEXT,
     facebook_url TEXT,
     alias TEXT,
-    place_label TEXT,
-    place_code TEXT,
-    latitude NUMERIC,
-    longitude NUMERIC,
-    parent_place_label TEXT,
+    city TEXT[],
+    postal_code TEXT,
     profile_url TEXT
 )
 """)
 
 for a in agents:
-    location = a.get("location", {})
-    parent = location.get("parent", {})
     cur.execute("""
-    INSERT INTO preeves_agents (
-        agent_id, active, first_name, last_name, phone, zone, identifier, type, civility,
+    INSERT INTO preeves_brokers (
+        agent_id, active, first_name, last_name, full_name, phone, network,
+        identifier, type, civility,
         google_my_business, facebook_url, alias,
-        place_label, place_code, latitude, longitude, parent_place_label, profile_url
-    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        city, postal_code, profile_url
+    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """, (
         a.get("id"),
         a.get("active"),
-        a.get("firstname"),
-        a.get("lastname"),
-        a.get("phone"),
-        a.get("zone"),
+        a.get("first_name"),
+        a.get("last_name"),
+        a.get("full_name"),
+        a.get("phone_number"),
+        a.get("network"),
         a.get("identifier"),
         a.get("type"),
         a.get("civility"),
         a.get("googleMyBusinessUrl"),
         a.get("facebookUrl"),
         a.get("alias"),
-        location.get("label"),
-        location.get("code"),
-        location.get("latitude"),
-        location.get("longitude"),
-        parent.get("label"),
+        a.get("city"),
+        a.get("postal_code"),
         a.get("profile_url")
     ))
 

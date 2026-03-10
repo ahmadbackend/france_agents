@@ -26,18 +26,15 @@ cur = conn.cursor()
 
 # ---------------- Create table ----------------
 cur.execute("""
-CREATE TABLE IF NOT EXISTS safti_agents (
+CREATE TABLE IF NOT EXISTS safti_brokers (
     id SERIAL PRIMARY KEY,
     last_name TEXT,
     first_name TEXT,
+    full_name TEXT,
     post_code TEXT,
-    city TEXT,
+    city TEXT[],
     phone_number TEXT,
-    principal_area TEXT,
-    other_areas TEXT,
     nb_properties INT,
-    lat NUMERIC,
-    lng NUMERIC,
     civility TEXT,
     slug TEXT,
     google_mb TEXT,
@@ -45,6 +42,8 @@ CREATE TABLE IF NOT EXISTS safti_agents (
     google_mb_user_ratings_total INT,
     google_mb_url TEXT,
     google_mb_rating NUMERIC,
+    annee_club_developpeur INT,
+    conseiller_club_developpeur BOOLEAN,
     profile_url TEXT
 )
 """)
@@ -52,23 +51,22 @@ CREATE TABLE IF NOT EXISTS safti_agents (
 # ---------------- Insert data ----------------
 for a in agents:
     cur.execute("""
-    INSERT INTO safti_agents (
-        last_name, first_name, post_code, city, phone_number,
-        principal_area, other_areas, nb_properties, lat, lng,
-        civility, slug, google_mb, google_mb_name, google_mb_user_ratings_total,
-        google_mb_url, google_mb_rating, profile_url
-    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+    INSERT INTO safti_brokers (
+        last_name, first_name, full_name, post_code, city, phone_number,
+        nb_properties, civility, slug,
+        google_mb, google_mb_name, google_mb_user_ratings_total,
+        google_mb_url, google_mb_rating,
+        annee_club_developpeur, conseiller_club_developpeur,
+        profile_url
+    ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """, (
-        a.get("lastName"),
-        a.get("firstName"),
+        a.get("last_name"),
+        a.get("first_name"),
+        a.get("full_name"),
         a.get("postCode"),
         a.get("city"),
-        a.get("phoneNumber"),
-        a.get("principalArea"),
-        a.get("otherAreas"),
+        a.get("phone_number"),
         a.get("nbProperties"),
-        a.get("lat"),
-        a.get("lng"),
         a.get("civility"),
         a.get("slug"),
         a.get("googleMB"),
@@ -76,6 +74,8 @@ for a in agents:
         a.get("googleMBUserRatingsTotal"),
         a.get("googleMBUrl"),
         a.get("googleMBRating"),
+        a.get("anneeClubDeveloppeur"),
+        a.get("conseillerClubDeveloppeur"),
         a.get("profile_url")
     ))
 
