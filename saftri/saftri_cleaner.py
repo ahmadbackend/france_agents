@@ -12,6 +12,7 @@ for item in data:
     item["first_name"] = item["firstName"]
     item["last_name"] = item["lastName"]
     item["full_name"] = item["first_name"] + " " + item["last_name"]
+    item["network"] = "SAFTI"
     city = item.get("city", "")
     otherAreas = item.get("otherAreas", []).split(",") if item.get("otherAreas") else []
     item["city"] = [city] + otherAreas if city else otherAreas

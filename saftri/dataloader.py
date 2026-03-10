@@ -28,6 +28,7 @@ cur = conn.cursor()
 cur.execute("""
 CREATE TABLE IF NOT EXISTS safti_brokers (
     id SERIAL PRIMARY KEY,
+    network TEXT,
     last_name TEXT,
     first_name TEXT,
     full_name TEXT,
@@ -52,7 +53,7 @@ CREATE TABLE IF NOT EXISTS safti_brokers (
 for a in agents:
     cur.execute("""
     INSERT INTO safti_brokers (
-        last_name, first_name, full_name, post_code, city, phone_number,
+        network, last_name, first_name, full_name, post_code, city, phone_number,
         nb_properties, civility, slug,
         google_mb, google_mb_name, google_mb_user_ratings_total,
         google_mb_url, google_mb_rating,
@@ -60,6 +61,7 @@ for a in agents:
         profile_url
     ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
     """, (
+        a.get("network"),
         a.get("last_name"),
         a.get("first_name"),
         a.get("full_name"),
