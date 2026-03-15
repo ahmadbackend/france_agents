@@ -39,7 +39,7 @@ def fetch(page):
             params=params,
             headers=headers,
             timeout=30,
-            proxy= PROXY
+            proxy=PROXY
         )
 
         if r.status_code == 403:
