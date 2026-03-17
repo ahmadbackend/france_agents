@@ -5,3 +5,6 @@
 */*.txt
 */*.jsonl
 .env
+*/*.csv
+*/*.jsonl
+play/
